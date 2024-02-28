@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 "Австралия",
                 "Индия",
                 "Южная Африка"
+
         };
 
         int[] flagImages = {
