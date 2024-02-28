@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ListView;
-import android.widget.ArrayAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,11 +28,22 @@ public class MainActivity extends AppCompatActivity {
                 "Индия",
                 "Южная Африка"
         };
-ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-        this,
-        android.R.layout.simple_list_item_1,
-        country
-);
-main_list.setAdapter(adapter);
+
+        int[] flagImages = {
+                R.drawable.usa,
+                R.drawable.canada,
+                R.drawable.france,
+                R.drawable.germany,
+                R.drawable.italy,
+                R.drawable.japan,
+                R.drawable.brazill,
+                R.drawable.australia,
+                R.drawable.india,
+                R.drawable.souh_africa,
+
+        };
+
+FlagAdapter flagAdapter = new FlagAdapter(this, country, flagImages);
+main_list.setAdapter(flagAdapter);
     }
 }
