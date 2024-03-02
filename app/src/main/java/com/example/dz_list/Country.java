@@ -3,8 +3,8 @@ package com.example.dz_list;
 public class Country {
     private String name;
     private int flagId;
-    private String capital; // Название столицы
-    private int area; // Площадь страны
+    private String capital;
+    private int area;
 
 
     public Country(String name, int flagId, String capital, int area) {

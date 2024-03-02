@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         CountryAdapter countryAdapter = new CountryAdapter(this, countries);
         main_list.setAdapter(countryAdapter);
 
-        // Установка слушателя для элементов списка
+
         main_list.setOnItemClickListener(this);
     }
 
@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Country country = (Country) parent.getItemAtPosition(position);
 
-        // Создание Intent для запуска DetailsActivity
+
         Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
 
-        // Передача данных о выбранной стране в Intent
+
         intent.putExtra("flagId", country.getFlagId());
         intent.putExtra("countryName", country.getName());
         intent.putExtra("capital", country.getCapital());
