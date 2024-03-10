@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,41 +22,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView main_list = findViewById(R.id.main_list);
 
-        List<Country> countries = new ArrayList<>();
-        countries.add(new Country("США", R.drawable.usa, "Вашингтон", 12345));
-        countries.add(new Country("Канада", R.drawable.canada, "Оттава", 98765));
-        countries.add(new Country("Франция", R.drawable.france, "Париж", 67890));
-        countries.add(new Country("Германия", R.drawable.germany, "Берлин", 54321));
-        countries.add(new Country("Италия", R.drawable.italy, "Рим", 45678));
-        countries.add(new Country("Япония", R.drawable.japan, "Токио", 34567));
-        countries.add(new Country("Бразилия", R.drawable.brazill, "Бразилиа", 23456));
-        countries.add(new Country("Австралия", R.drawable.australia, "Канберра", 87654));
-        countries.add(new Country("Индия", R.drawable.india, "Нью-Дели", 76543));
-        countries.add(new Country("Южная Африка", R.drawable.souh_africa, "Претория", 65432));
+        if (savedInstanceState == null) {
 
-        CountryAdapter countryAdapter = new CountryAdapter(this, countries);
-        main_list.setAdapter(countryAdapter);
+            CountryListFragment countryListFragment = new CountryListFragment();
 
 
-        main_list.setOnItemClickListener(this);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+
+            fragmentTransaction.add(R.id.fragment_container, countryListFragment);
+
+
+            fragmentTransaction.commit();
     }
+}
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Country country = (Country) parent.getItemAtPosition(position);
 
-
-        Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-
-
-        intent.putExtra("flagId", country.getFlagId());
-        intent.putExtra("countryName", country.getName());
-        intent.putExtra("capital", country.getCapital());
-        intent.putExtra("area", country.getArea());
-
-        // Запуск DetailsActivity
-        startActivity(intent);
     }
 }
