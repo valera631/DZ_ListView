@@ -10,14 +10,15 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CountryListFragment extends Fragment {
 
     private ListView listView;
-    private List<Country> countries;
+    private CountriesViewModel countriesViewModel;
+    private DetailsViewModel detailsViewModel;
 
     @Nullable
     @Override
@@ -26,48 +27,29 @@ public class CountryListFragment extends Fragment {
 
         listView = view.findViewById(R.id.country_list_view);
 
-        // Создаем список стран
-        countries = new ArrayList<>();
-        countries.add(new Country("США", R.drawable.usa, "Вашингтон", 12345));
-        countries.add(new Country("Канада", R.drawable.canada, "Оттава", 98765));
-        countries.add(new Country("Франция", R.drawable.france, "Париж", 67890));
-        countries.add(new Country("Германия", R.drawable.germany, "Берлин", 54321));
-        countries.add(new Country("Италия", R.drawable.italy, "Рим", 45678));
-        countries.add(new Country("Япония", R.drawable.japan, "Токио", 34567));
-        countries.add(new Country("Бразилия", R.drawable.brazill, "Бразилиа", 23456));
-        countries.add(new Country("Австралия", R.drawable.australia, "Канберра", 87654));
-        countries.add(new Country("Индия", R.drawable.india, "Нью-Дели", 76543));
-        countries.add(new Country("Южная Африка", R.drawable.souh_africa, "Претория", 65432));
+        countriesViewModel = new ViewModelProvider(requireActivity()).get(CountriesViewModel.class);
+        countriesViewModel.getCountries().observe(getViewLifecycleOwner(), countries -> {
+            CountryAdapter countryAdapter = new CountryAdapter(requireActivity(), countries);
+            listView.setAdapter(countryAdapter);
+        });
 
-        // Создаем адаптер для списка стран
-        CountryAdapter countryAdapter = new CountryAdapter(requireActivity(), countries);
+        // Получаем экземпляр DetailsViewModel из того же ViewModelProvider
+        detailsViewModel = new ViewModelProvider(requireActivity()).get(DetailsViewModel.class);
 
-        // Устанавливаем адаптер для ListView
-        listView.setAdapter(countryAdapter);
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            Country selectedCountry = (Country) parent.getItemAtPosition(position);
+            // Устанавливаем выбранную страну в DetailsViewModel
+            detailsViewModel.setSelectedCountry(selectedCountry);
 
-        // Устанавливаем слушатель для кликов на элементах списка
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            // Создаем экземпляр DetailsFragment
+            DetailsFragment detailsFragment = new DetailsFragment();
 
-                Country selectedCountry = countries.get(position);
-
-
-                Bundle bundle = new Bundle();
-                bundle.putInt("flagId", selectedCountry.getFlagId());
-                bundle.putString("countryName", selectedCountry.getName());
-                bundle.putString("capital", selectedCountry.getCapital());
-                bundle.putInt("area", selectedCountry.getArea());
-
-
-                DetailsFragment detailsFragment = new DetailsFragment();
-                detailsFragment.setArguments(bundle);
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, detailsFragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
+            // Заменяем текущий фрагмент на DetailsFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, detailsFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;

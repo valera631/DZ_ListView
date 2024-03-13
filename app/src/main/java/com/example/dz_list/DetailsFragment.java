@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 public class DetailsFragment extends Fragment {
 
@@ -28,20 +29,13 @@ public class DetailsFragment extends Fragment {
         capitalTextView = view.findViewById(R.id.capital_text_view);
         areaTextView = view.findViewById(R.id.area_text_view);
 
-
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            int flagId = arguments.getInt("flagId");
-            String countryName = arguments.getString("countryName");
-            String capital = arguments.getString("capital");
-            int area = arguments.getInt("area");
-
-
-            flagImageView.setImageResource(flagId);
-            countryNameTextView.setText(countryName);
-            capitalTextView.setText("Столица: " + capital);
-            areaTextView.setText("Площадь: " + area);
-        }
+        DetailsViewModel detailsViewModel = new ViewModelProvider(requireActivity()).get(DetailsViewModel.class);
+        detailsViewModel.getSelectedCountry().observe(getViewLifecycleOwner(), country -> {
+            flagImageView.setImageResource(country.getFlagId());
+            countryNameTextView.setText(country.getName());
+            capitalTextView.setText("Столица: " + country.getCapital());
+            areaTextView.setText("Площадь: " + country.getArea());
+        });
 
         return view;
     }
