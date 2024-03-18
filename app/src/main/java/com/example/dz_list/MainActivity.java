@@ -6,21 +6,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+public class MainActivity extends AppCompatActivity implements CountryAdapter.OnItemClickListener {
+    private List<Country> countries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView main_list = findViewById(R.id.main_list);
+        RecyclerView mainRecyclerView = findViewById(R.id.main_recycler_view);
+        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Country> countries = new ArrayList<>();
+        countries = new ArrayList<>();
         countries.add(new Country("США", R.drawable.usa, "Вашингтон", 12345));
         countries.add(new Country("Канада", R.drawable.canada, "Оттава", 98765));
         countries.add(new Country("Франция", R.drawable.france, "Париж", 67890));
@@ -33,26 +37,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         countries.add(new Country("Южная Африка", R.drawable.souh_africa, "Претория", 65432));
 
         CountryAdapter countryAdapter = new CountryAdapter(this, countries);
-        main_list.setAdapter(countryAdapter);
-
-
-        main_list.setOnItemClickListener(this);
+        mainRecyclerView.setAdapter(countryAdapter);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Country country = (Country) parent.getItemAtPosition(position);
-
+    public void onItemClick(int position) {
+        // Обработка нажатия на элемент RecyclerView
+        Country country = countries.get(position);
 
         Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-
-
         intent.putExtra("flagId", country.getFlagId());
         intent.putExtra("countryName", country.getName());
         intent.putExtra("capital", country.getCapital());
         intent.putExtra("area", country.getArea());
 
-        // Запуск DetailsActivity
         startActivity(intent);
     }
 }

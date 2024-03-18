@@ -1,59 +1,66 @@
 package com.example.dz_list;
-import android.content.Context;
-import android.content.Intent;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-public class CountryAdapter extends ArrayAdapter<Country> implements CountryAdapte {
-    private Context context;
-    private List<Country> countries;
 
-    public CountryAdapter(Context context, List<Country> countries) {
-        super(context, R.layout.item, countries);
-        this.context = context;
+public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryViewHolder> {
+    private List<Country> countries;
+    private OnItemClickListener listener;
+
+    public CountryAdapter(OnItemClickListener listener, List<Country> countries) {
+        this.listener = listener;
         this.countries = countries;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.item, parent, false);
-
-        ImageView flagImageView = view.findViewById(R.id.flag);
-        TextView countryTextView = view.findViewById(R.id.country);
-
-        Country country = countries.get(position);
-
-        flagImageView.setImageResource(country.getFlagId());
-        countryTextView.setText(country.getName());
-
-        return view;
+    public CountryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
+        return new CountryViewHolder(view);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Country country = getItem(position);
+    public void onBindViewHolder(@NonNull CountryViewHolder holder, int position) {
+        Country country = countries.get(position);
+        holder.flagImageView.setImageResource(country.getFlagId());
+        holder.countryTextView.setText(country.getName());
+    }
 
+    @Override
+    public int getItemCount() {
+        return countries.size();
+    }
 
-        Intent intent = new Intent(getContext(), DetailsActivity.class);
+    class CountryViewHolder extends RecyclerView.ViewHolder {
+        ImageView flagImageView;
+        TextView countryTextView;
 
+        public CountryViewHolder(@NonNull View itemView) {
+            super(itemView);
+            flagImageView = itemView.findViewById(R.id.flag);
+            countryTextView = itemView.findViewById(R.id.country);
 
-        intent.putExtra("flagId", country.getFlagId());
-        intent.putExtra("countryName", country.getName());
-        intent.putExtra("capital", country.getCapital());
-        intent.putExtra("area", country.getArea());
-
-
-        getContext().startActivity(intent);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.onItemClick(position); // Вызываем колбэк onItemClick при клике на элемент списка
+                    }
+                }
+            });
+        }
     }
 }
