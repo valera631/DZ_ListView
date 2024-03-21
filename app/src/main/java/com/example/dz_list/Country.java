@@ -2,14 +2,14 @@ package com.example.dz_list;
 
 public class Country {
     private String name;
-    private int flagId;
+    private String flagUrl;
     private String capital;
     private int area;
 
 
-    public Country(String name, int flagId, String capital, int area) {
+    public Country(String name, String flagUrl, String capital, int area) {
         this.name = name;
-        this.flagId = flagId;
+        this.flagUrl = flagUrl;
         this.capital = capital;
         this.area = area;
     }
@@ -18,8 +18,8 @@ public class Country {
         return name;
     }
 
-    public int getFlagId() {
-        return flagId;
+    public String getFlagUrl() {
+        return flagUrl;
     }
 
     public String getCapital() {

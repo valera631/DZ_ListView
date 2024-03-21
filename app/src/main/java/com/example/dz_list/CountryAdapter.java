@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 public class CountryAdapter extends ArrayAdapter<Country> implements CountryAdapte {
     private Context context;
@@ -34,7 +36,9 @@ public class CountryAdapter extends ArrayAdapter<Country> implements CountryAdap
 
         Country country = countries.get(position);
 
-        flagImageView.setImageResource(country.getFlagId());
+        // Используйте Picasso для загрузки изображения из URL
+        Picasso.get().load(country.getFlagUrl()).into(flagImageView);
+
         countryTextView.setText(country.getName());
 
         return view;
@@ -48,7 +52,7 @@ public class CountryAdapter extends ArrayAdapter<Country> implements CountryAdap
         Intent intent = new Intent(getContext(), DetailsActivity.class);
 
 
-        intent.putExtra("flagId", country.getFlagId());
+        intent.putExtra("flagUrl", country.getFlagUrl());
         intent.putExtra("countryName", country.getName());
         intent.putExtra("capital", country.getCapital());
         intent.putExtra("area", country.getArea());
